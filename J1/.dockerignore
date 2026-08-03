@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+README.md
+partie1_architecture_fondations.pdf
