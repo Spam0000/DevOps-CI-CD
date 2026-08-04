@@ -1,0 +1,57 @@
+name: Platform
+
+on: [push, pull_request]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      front: ${{ steps.filter.outputs.front }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      billing: ${{ steps.filter.outputs.billing }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            front:   ['apps/front/**']
+            gateway: ['services/gateway/**']
+            billing: ['services/billing/**']
+
+  test-front:
+    needs: changes
+    if: needs.changes.outputs.front == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@v4
+      - run: npx playwright test --project=${{ matrix.browser }}
+
+  test-gateway:
+    needs: changes
+    if: needs.changes.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm test
+        working-directory: services/gateway
+
+  test-billing:
+    needs: changes
+    if: needs.changes.outputs.billing == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -r requirements.txt && pytest
+        working-directory: services/billing
+
+  ci-ok:
+    needs: [test-front, test-gateway, test-billing]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          [[ "${{ contains(needs.*.result, 'failure') }}" == "false" ]]
