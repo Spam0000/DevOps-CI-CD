@@ -1,0 +1,11 @@
+{
+  "name": "clickfast",
+  "version": "1.0.0",
+  "description": "Jeu de clics - exercice CI/CD J2 Aprem",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

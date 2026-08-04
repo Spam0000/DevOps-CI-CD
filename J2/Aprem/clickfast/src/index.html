@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClickFast</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>ClickFast</h1>
+    <p class="subtitle">Clique le plus vite possible !</p>
+    <div id="score">0</div>
+    <button id="btn-click">CLIQUE !</button>
+    <button id="btn-reset">Reset</button>
+  </div>
+  <script src="game.js"></script>
+  <script>
+    const counter = new ClickCounter();
+    const scoreEl = document.getElementById('score');
+
+    document.getElementById('btn-click').addEventListener('click', () => {
+      scoreEl.textContent = counter.click();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      scoreEl.textContent = counter.reset();
+    });
+  </script>
+</body>
+</html>
